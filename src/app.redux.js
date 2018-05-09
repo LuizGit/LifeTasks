@@ -1,3 +1,4 @@
+/* global angular */
 angular.module('LifeTask').config([
 	'$ngReduxProvider',
 	$ngReduxProvider => {
