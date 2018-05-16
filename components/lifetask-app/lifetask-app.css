@@ -25,3 +25,21 @@ lifetask-app #appContent {
     grid-area:appContent;
     background-color: rgb(230,230,230);
 }
+lifetask-app #loginContent{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    top: 64px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 64px);
+    color: var(--app-text-color);
+    background-color: var(--app-color);
+    visibility: visible;
+
+}
+lifetask-app[authorized] #loginContent{
+    visibility: hidden;
+}

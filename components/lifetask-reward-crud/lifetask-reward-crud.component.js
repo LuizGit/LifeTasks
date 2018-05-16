@@ -1,16 +1,16 @@
-/* global angular importStyle*/
+/* global angular, firebase, importStyle*/
 
-importStyle('components/lifetask-login/lifetask-login.css', {preload: true});
+importStyle('components/lifetask-reward-crud/lifetask-reward-crud.css', {preload: true});
 
-class LifetaskLogin{
+class LifetaskRewardCrud{
 	constructor(){
-		this.templateUrl = 'components/lifetask-login/lifetask-login.html';
+		this.templateUrl = 'components/lifetask-reward-crud/lifetask-reward-crud.html';
 		this.bindings = {};
-		this.controller = LifetaskLoginController;
+		this.controller = LifetaskRewardCrudController;
 	}
 }
 
-class LifetaskLoginController {
+class LifetaskRewardCrudController {
 	static get $inject() {return ['$element', '$ngRedux'];}
 
 	constructor($element, $ngRedux){
@@ -26,7 +26,7 @@ class LifetaskLoginController {
 
 	/* Lifecycle */ 
 	$onInit() { 
-		this.$.removeAttribute('unresolved');
+		
 
 	}
 
@@ -34,6 +34,8 @@ class LifetaskLoginController {
 	/* */
 
 	/* Public */
+	
+	}
 	/* */
 
 	/* Private */
@@ -46,4 +48,4 @@ class LifetaskLoginController {
 	/* */
 }
 
-angular.module('LifeTask').component('lifetaskLogin', new LifetaskLogin ());
+angular.module('LifeTask').component('lifetaskRewardCrud', new LifetaskRewardCrud ());

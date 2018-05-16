@@ -35,6 +35,10 @@
                 "functions": true,
                 "classes": false
             }
+        ],
+        "no-console": [
+            1,
+            {}
         ]
     }
 }

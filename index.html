@@ -30,6 +30,21 @@
 </head>
 <body>
     <lifetask-app unresolved></lifetask-app>
+    <script src="https://www.gstatic.com/firebasejs/5.0.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.0.2/firebase-auth.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBb1AESZN6eTeaOu8xFCcicJdpI4zXQ7vQ",
+            authDomain: "lapj-life-task.firebaseapp.com",
+            databaseURL: "https://lapj-life-task.firebaseio.com",
+            projectId: "lapj-life-task",
+            storageBucket: "lapj-life-task.appspot.com",
+            messagingSenderId: "358843494970"
+        };
+        firebase.initializeApp(config);
+    </script>
 
     <!-- POlyfills -->
     <script src="src/importStyle.js"></script>
