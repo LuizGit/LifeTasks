@@ -1,4 +1,4 @@
-/* global angular, firebase, importStyle*/
+/* global angular,  importStyle*/
 
 importStyle('components/lifetask-task-crud/lifetask-task-crud.css', {preload: true});
 
@@ -35,7 +35,7 @@ class LifetaskTaskCrudController {
 
 	/* Public */
 	
-	}
+	
 	/* */
 
 	/* Private */

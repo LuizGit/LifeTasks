@@ -1,4 +1,4 @@
-/* global angular, firebase, importStyle*/
+/* global angular, importStyle*/
 
 importStyle('components/lifetask-reward-list/lifetask-reward-list.css', {preload: true});
 
@@ -17,9 +17,7 @@ class LifetaskRewardListController {
 		Object.assign(this, {$: $element[0],$ngRedux});
 
 		this.__lifetaskBehavior = $ngRedux.connect(behavior => Object({
-			session: behavior.session,
-			task: behavior.task,
-			reward: behavior.reward
+			rewardList: behavior.reward.list
 		})
 		)(this);
 	}
@@ -35,7 +33,6 @@ class LifetaskRewardListController {
 
 	/* Public */
 	
-	}
 	/* */
 
 	/* Private */

@@ -10,25 +10,35 @@ angular.module('LifeTask').config([
 				this.coins = 0;
 			}
 		}
+		function syncWithStorage(state){
+			window.localStorage.setItem('sessionState', JSON.stringify(state));
+		}
+		function getSessionState(){
+			const localStorageItem = window.localStorage.getItem('sessionState');
+			return localStorageItem ? JSON.parse(localStorageItem) : new SessionReducerState();
+		}
 
 		function sessionReducer(state, action){
 			if (!state)
-				return new SessionReducerState();
+				return getSessionState();
+			let newState = {};
 			switch(action.type){
 			case 'LOGIN':
-				return Object.assign({}, state,{
+				newState =  Object.assign({}, state,{
 					id: action.data.id,
-					name: action.date.name,
-					email: action.date.email,
+					name: action.data.name,
+					email: action.data.email,
 				});
+				syncWithStorage(newState);
+				return newState;
 			default:
-				return state;
+				return newState;
 			}
 		}
 
 		class TaskReducerState {
 			constructor(){
-				this.list = [];
+				this.list = [{title: 'Titulo', description: 'Descrição'}];
 			}
 		}
 
@@ -42,7 +52,7 @@ angular.module('LifeTask').config([
 		}
 		class RewardReducerState {
 			constructor(){
-				this.list = [];
+				this.list = [{title: 'Titulo', description: 'Descrição', value: 10}];
 			}
 		}
 

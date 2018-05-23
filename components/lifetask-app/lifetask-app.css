@@ -16,7 +16,7 @@ lifetask-app #appHeader{
     padding: 0 16px;
     position: fixed;
     height: 64px;
-    width: 100vh;
+    width: 100vw;
     color: var(--app-text-color);
     background-color: var(--app-color);
     box-shadow: 0 0 8px rgba(0,0,0, .16);

@@ -17,16 +17,16 @@ class LifetaskAppController {
 		Object.assign(this, {$: $element[0],$ngRedux});
 
 		this.__lifetaskBehavior = $ngRedux.connect(behavior => Object({
-			session: behavior.session,
-			task: behavior.task,
-			reward: behavior.reward
+			userId: behavior.session.id
 		})
 		)(this);
 		this.provider = new firebase.auth.GoogleAuthProvider();
 	}
 
 	/* Lifecycle */ 
-	$onInit() { 
+	$onInit() {
+		if(this.userId)
+			this.$.setAttribute('authorized', '');
 		this.$.removeAttribute('unresolved');
 
 	}
@@ -46,7 +46,7 @@ class LifetaskAppController {
 						id: result.user.uid
 					}
 				});
-				this.$.$setAttribute('authorized','');
+				this.$.setAttribute('authorized','');
 			}
 		}).catch(error => {
 			console.log(error);
