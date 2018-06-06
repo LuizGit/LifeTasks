@@ -17,7 +17,8 @@ class LifetaskAppController {
 		Object.assign(this, {$: $element[0],$ngRedux});
 
 		this.__lifetaskBehavior = $ngRedux.connect(behavior => Object({
-			userId: behavior.session.id
+			userId: behavior.session.id,
+			userCoins: behavior.session.coins
 		})
 		)(this);
 		this.provider = new firebase.auth.GoogleAuthProvider();
