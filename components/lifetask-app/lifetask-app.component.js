@@ -11,10 +11,10 @@ class LifetaskApp{
 }
 
 class LifetaskAppController {
-	static get $inject() {return ['$element', '$ngRedux'];}
+	static get $inject() {return ['$element', '$ngRedux', '$state', '$scope'];}
 
-	constructor($element, $ngRedux){
-		Object.assign(this, {$: $element[0],$ngRedux});
+	constructor($element, $ngRedux, $state, $scope){
+		Object.assign(this, {$: $element[0],$ngRedux, $state, $scope});
 
 		this.__lifetaskBehavior = $ngRedux.connect(behavior => Object({
 			userId: behavior.session.id,
@@ -26,9 +26,12 @@ class LifetaskAppController {
 
 	/* Lifecycle */ 
 	$onInit() {
+		
 		if(this.userId)
 			this.$.setAttribute('authorized', '');
 		this.$.removeAttribute('unresolved');
+
+		this.$scope.$watch(() => this.$state.$current,this.__stateChanged.bind(this));
 
 	}
 
@@ -52,6 +55,11 @@ class LifetaskAppController {
 		}).catch(error => {
 			console.log(error);
 		});}
+
+	changeView(evt){
+		
+		this.$state.go(evt.target.dataset.view);
+	}
 	/* */
 
 	/* Private */
@@ -61,6 +69,21 @@ class LifetaskAppController {
 	/* */
 
 	/* Observer */
+	__stateChanged(newValue){
+		if(newValue){
+			const currentState = newValue.name;
+			this.$.querySelectorAll('#appFooter div')
+				.forEach(node => {
+					if(currentState.includes('task') && node.dataset.view.includes('task'))
+						node.setAttribute('active', '');
+					else if (currentState.includes('reward') && node.dataset.view.includes('reward'))
+						node.setAttribute('active', '');
+					else
+						node.removeAttribute('active');
+				});
+		}
+	}
+
 	/* */
 }
 
