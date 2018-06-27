@@ -1,10 +1,12 @@
 <header id="appHeader">
     <span>Life Task</span>
-
-    <span>Coins: {{ $ctrl.userCoins }}</span>
-    <i class="material-icons">
-        account_circle
-    </i>
+    <div id="appHeaderCoin">
+        <span>Coins: {{ $ctrl.userCoins }}</span>
+        <i class="material-icons">
+            monetization_on
+        </i>
+    </div>
+    
 </header>
 
 <ui-view id="appContent"></ui-view>

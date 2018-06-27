@@ -1,4 +1,6 @@
-<section class="lifetask-task-card" ng-repeat="task in $ctrl.taskList">
+<section class="lifetask-task-card" 
+    ng-repeat="task in $ctrl.taskList"
+    ng-class="{'last-card': $last}">
     <div class="lifetask-task-card-header">
         <span>{{task.title}}</span>
     </div>
@@ -11,4 +13,9 @@
 
 
     </div>
+</section>
+
+<section id="lifetask-task-fab-add"
+    ng-click="$ctrl.addTask()">
+    <i class="material-icons">add</i>
 </section>

@@ -40,7 +40,7 @@ class LifetaskTaskCrudController {
 
 	/* Public */
 	save(){
-		this.$ngRedux.dispatch({type: 'SAVE_EDIT', data: {
+		this.$ngRedux.dispatch({type: 'SAVE_TASK_CRUD', data: {
 			id: this.id,
 			title: this.title,
 			description: this.description,
