@@ -31,9 +31,9 @@ angular.module('LifeTask').config([
 				});
 				syncWithStorage(newState);
 				return newState;
-			case 'FINISH_TASK':
-				newState = Object.assign({}, state, {
-					coins: state.coins + action.data.task.reward
+			case 'UPDATE_COINS':
+				newState = Object.assign({}, state,{
+					coins: action.data.coins
 				});
 				syncWithStorage(newState);
 				return newState;
@@ -44,14 +44,14 @@ angular.module('LifeTask').config([
 				syncWithStorage(newState);
 				return newState;
 			default:
-				return newState;
+				return state;
 			}
 		}
 
 		class TaskReducerState {
 			constructor(){
-				this.task = {id: null, title: null, description: null, reward: null};
-				this.list = [{id: 0, title: 'Titulo', description: 'Descrição', reward: 10}];
+				this.task = {};
+				this.list = [];
 			}
 		}
 
@@ -61,17 +61,9 @@ angular.module('LifeTask').config([
 			switch(action.type){
 			case 'TASK_CRUD':
 				return Object.assign({}, state, {task: Object.assign({}, state.task, action.data.task)});
-			case 'SAVE_TASK_CRUD':
+			case 'UPDATE_TASK_LIST':
 				return Object.assign({}, state, {
-					task: {id: null, title: null, description: null, reward: null},
-					list: !state.list.filter(task => task.id == action.data.id)[0] ? 
-						state.list.concat(action.data) : 
-						state.list.map(task =>
-							task.id == action.data.id ? action.data:task)
-				});
-			case 'FINISH_TASK':
-				return Object.assign({}, state, {
-					list: state.list.filter(task => task.id != action.data.task.id)
+					list: action.data.taskList
 				});
 			default:
 				return state;
@@ -79,8 +71,8 @@ angular.module('LifeTask').config([
 		}
 		class RewardReducerState {
 			constructor(){
-				this.reward = {id: null, title: null, description: null, value: null};
-				this.list = [{id: null, title: 'Titulo', description: 'Descrição', value: 10}];
+				this.reward = {};
+				this.list = [];
 			}
 		}
 
@@ -90,18 +82,11 @@ angular.module('LifeTask').config([
 			switch(action.type){
 			case 'REWARD_CRUD':
 				return Object.assign({}, state, {reward: Object.assign({}, state.reward, action.data.reward)});
-			case 'SAVE_REWARD_CRUD':
+			case 'UPDATE_REWARD_LIST':
 				return Object.assign({}, state, {
-					reward: {id: null, title: null, description: null, reward: null},
-					list: !state.list.filter(reward => reward.id == action.data.id)[0] ? 
-						state.list.concat(action.data) : 
-						state.list.map(reward =>
-							reward.id == action.data.id ? action.data:reward)
-				});	
-			case 'BUY_REWARD':
-				return Object.assign({}, state, {
-					list: state.list.filter(task => task.id != action.data.reward.id)
+					list: action.data.rewardList
 				});
+
 			default:
 				return state;
 			}

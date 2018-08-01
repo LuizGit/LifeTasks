@@ -26,36 +26,77 @@ class LifetaskAppController {
 
 	/* Lifecycle */ 
 	$onInit() {
-		
-		if(this.userId)
-			this.$.setAttribute('authorized', '');
 		this.$.removeAttribute('unresolved');
 
 		this.$scope.$watch(() => this.$state.$current,this.__stateChanged.bind(this));
 
+		firebase. auth()
+			.onAuthStateChanged(user => {
+				if (user) {
+					this.$ngRedux.dispatch({ type: 'LOGIN',
+						data:{
+							name: user.displayName,
+							email: user.email,
+							id: user.uid
+						}
+					});
+					this.$.setAttribute('authorized', '');
+				} else{
+					firebase.auth().signOut();
+				}
+			});
+
 	}
 
-	$onDestroy() { }
+	$onDestroy() { 
+		this.__lifetaskBehavior();
+	}
 	/* */
 
 	/* Public */
 	login() {
 		firebase.auth().signInWithPopup(this.provider).then(result => {
 			if (result.credential){
-				this.$ngRedux.dispatch({
-					type: 'LOGIN',
-					data: {
-						name: result.user.displayName,
-						email: result.user.email,
-						id: result.user.uid
-					}
-				});
-				this.$.setAttribute('authorized','');
-			}
-		}).catch(error => {
-			console.log(error);
-		});}
+				const db = firebase.firestore();
+				db.collection('users')
+					.doc(result.user.uid)
+					.get()
+					.then(res => {
+						if(!res.data())
+							db.collection('users')
+								.doc(result.user.uid)
+								.set({
+									uid: result.user.uid,
+									coins: 0,
+									taskList: [],
+									rewardList: []
+								});
+						else{
+							this.$ngRedux.dispatch({type: 'UPDATE_COINS',
+								data: {
+									coins: res.data().coins
+								}
+							});
+							this.$ngRedux.dispatch({type: 'UPDATE_TASK_LIST',
+								data: {
+									taskList: res.data().taskList
+								}
+							});
+							this.$ngRedux.dispatch({type: 'UPDATE_REWARD_LIST',
+								data:{
+									rewardList: res.data().rewardList
+								}
+							});
+						}
+					});
 
+			}
+			
+		})
+			.catch(error =>
+				console.warn(error)
+			);	
+	}
 	changeView(evt){
 		
 		this.$state.go(evt.target.dataset.view);

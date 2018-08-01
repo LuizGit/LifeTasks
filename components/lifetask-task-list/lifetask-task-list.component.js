@@ -1,9 +1,9 @@
-/* global angular, importStyle*/
+/* global angular, firebase, importStyle*/
 
-importStyle('components/lifetask-task-list/lifetask-task-list.css', {preload: true});
+importStyle('components/lifetask-task-list/lifetask-task-list.css', { preload: true });
 
-class LifetaskTaskList{
-	constructor(){
+class LifetaskTaskList {
+	constructor() {
 		this.templateUrl = 'components/lifetask-task-list/lifetask-task-list.html';
 		this.bindings = {};
 		this.controller = LifetaskTaskListController;
@@ -11,46 +11,79 @@ class LifetaskTaskList{
 }
 
 class LifetaskTaskListController {
-	static get $inject() {return ['$element', '$ngRedux', '$state'];}
+	static get $inject() { return ['$element', '$ngRedux', '$state']; }
 
-	constructor($element, $ngRedux, $state){
-		Object.assign(this, {$: $element[0],$ngRedux, $state});
+	constructor($element, $ngRedux, $state) {
+		Object.assign(this, { $: $element[0], $ngRedux, $state });
 
-		this.__lifetaskBehavior = $ngRedux.connect(behavior => Object({
-			taskList: behavior.task.list
-		})
-		)(this);
+		this.__lifetaskBehavior = $ngRedux.connect(behavior => {
+			console.log(behavior.session.id);
+			return Object({
+				userId: behavior.session.id,
+				coins: behavior.session.coins,
+				taskList: behavior.task.list
+			});
+		})(this);
 	}
 
-	/* Lifecycle */ 
-	$onInit() { 
-		
+	/* Lifecycle */
+	$onInit() {
+
 
 	}
 
-	$onDestroy() { 
+	$onDestroy() {
 
 
 	}
 	/* */
-
 	/* Public */
-	addTask(){
-		const taskList = Object.assign([] , this.taskList);
-		let newId = 0;
-		if(taskList > 0)
-			newId = taskList.sort((a,b) => a.id < b.id)[0].id + 1;
-		this.$ngRedux.dispatch({type: 'TASK_CRUD', data: {task:{id: newId}}});
+	addTask() {
+		this.$ngRedux.dispatch({ type: 'TASK_CRUD', data: { 
+			task: {title: null, description: null, reward: null} 
+		}});
 		this.$state.go('taskCrud');
 	}
 
-	editTask(task){
-		this.$ngRedux.dispatch({type:'TASK_CRUD', data: {task}});
+	editTask(task) {
+		this.$ngRedux.dispatch({ type: 'TASK_CRUD', data: { task } });
 		this.$state.go('taskCrud');
 	}
 
-	finishTask(task){
-		this.$ngRedux.dispatch({type: 'FINISH_TASK', data: {task}});
+	finishTask(task) {
+		const db = firebase.firestore();
+		db.collection('users').doc(this.userId).collection('taskList').doc(task.id).delete()
+			.then(() => 
+				db.collection('users')
+					.doc(this.userId)
+					.update({
+						coins: this.coins+ task.reward
+					})
+			)
+			.then(() => {
+				return db.collection('users')
+					.doc(this.userId)
+					.get();
+			})
+			.then(res =>
+				this.$ngRedux.dispatch({
+					type: 'UPDATE_COINS',
+					data: {
+						taskList: res.data().coins
+					}
+				})
+			)
+			.then(res =>
+				this.$ngRedux.dispatch({
+					type: 'UPDATE_TASK_LIST',
+					data: {
+						taskList: res.data().taskList
+					}
+				})
+			)
+			.catch(err =>
+				console.error(err)
+			);
 	}
 	/* */
 
@@ -64,4 +97,4 @@ class LifetaskTaskListController {
 	/* */
 }
 
-angular.module('LifeTask').component('lifetaskTaskList', new LifetaskTaskList ());
+angular.module('LifeTask').component('lifetaskTaskList', new LifetaskTaskList());
