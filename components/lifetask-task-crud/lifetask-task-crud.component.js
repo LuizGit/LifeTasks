@@ -53,16 +53,20 @@ class LifetaskTaskCrudController {
 				description: this.description,
 				reward: this.reward
 			})
-			.then(res => {
-				console.log(res);
-				return db.collection('users')
+			.then(() => 
+				db.collection('users')
 					.doc(this.userId)
-					.get();
-			})
+					.collection('taskList')
+					.get()
+			)
 			.then(res => {
 				this.$ngRedux.dispatch({ type: 'UPDATE_TASK_LIST', 
 					data: {
-						taskList: res.data().taskList
+						taskList: res.docs.map(doc => 
+							Object.assign({},doc.data(), {
+								id: doc.id
+							})
+						)
 					}
 
 				});
@@ -83,16 +87,20 @@ class LifetaskTaskCrudController {
 				description: this.description,
 				reward: this.reward
 			})
-			.then(res => {
-				console.log(res);
-				return db.collection('users')
+			.then(() => {
+				db.collection('users')
 					.doc(this.userId)
+					.collection('taskList')
 					.get();
 			})
 			.then(res => {
 				this.$ngRedux.dispatch({ type: 'UPDATE_TASK_LIST', 
 					data: {
-						taskList: res.data().taskList
+						taskList: res.docs.map(doc => 
+							Object.assign({},doc.data(), {
+								id: doc.id
+							})
+						)
 					}
 
 				});

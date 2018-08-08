@@ -35,7 +35,7 @@ class LifetaskRewardCrudController {
 
 	/* Public */
 	save() {
-		if(this.reward.id)
+		if(this.id)
 			this.updateReward();
 		else
 			this.createReward();
@@ -44,22 +44,26 @@ class LifetaskRewardCrudController {
 		const db = firebase.firestore();
 		db.collection('users')
 			.doc(this.userId)
-			.collection('RewardList')
-			.set({
+			.collection('rewardList')
+			.add({
 				title: this.title,
 				description: this.description,
 				value: this.value
 			})
-			.then(res => {
-				console.log(res);
-				return db.collection('users')
+			.then(() => 
+				db.collection('users')
 					.doc(this.userId)
-					.get();
-			})
+					.collection('rewardList')
+					.get()
+			)
 			.then(res => {
 				this.$ngRedux.dispatch({ type: 'UPDATE_REWARD_LIST', 
 					data: {
-						rewardList: res.data().rewardList
+						rewardList: res.docs.map(doc => 
+							Object.assign({},doc.data(), {
+								id: doc.id
+							})
+						)
 					}
 
 				});
@@ -80,16 +84,20 @@ class LifetaskRewardCrudController {
 				description: this.description,
 				value: this.value
 			})
-			.then(res => {
-				console.log(res);
-				return db.collection('users')
+			.then(() => 
+				db.collection('users')
 					.doc(this.userId)
-					.get();
-			})
+					.collection('rewardList')
+					.get()
+			)
 			.then(res => {
 				this.$ngRedux.dispatch({ type: 'UPDATE_REWARD_LIST', 
 					data: {
-						rewardList: res.data().rewardList
+						rewardList: res.docs.map(doc => 
+							Object.assign({},doc.data(), {
+								id: doc.id
+							})
+						)
 					}
 
 				});
